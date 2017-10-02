@@ -1,0 +1,25 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    working_directory: /srv/jekyll
+    docker:
+      # specify the version
+      - image: praqma/jekyll_cli:0.2
+    #### TEMPLATE_NOTE: go expects specific checkout path representing url
+    #### expecting it in the form of
+    ####   /go/src/github.com/circleci/go-tool
+    ####   /go/src/bitbucket.org/circleci/go-tool
+    #### working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - setup_remote_docker
+      # specify any bash command here prefixed with `run: `
+      - run: docker version
+      - deploy:
+          name: Build and Maybe Deploy
+          command: |
+            ./build-local.sh
+            ./deploy-aws.sh
